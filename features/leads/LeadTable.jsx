@@ -1,6 +1,7 @@
 "use client";
 
-import { ArrowDown, ArrowUp, ArrowUpDown, MoreVertical, Pencil, Trash2, UserPlus } from "lucide-react";
+import { ArrowDown, ArrowUp, ArrowUpDown, Eye, MoreVertical, Pencil, Trash2, UserPlus } from "lucide-react";
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { cn, formatDate, humanize, initials } from "@/lib/utils";
 import { StatusBadge } from "@/components/ui/Badge";
@@ -92,7 +93,11 @@ function DesktopTable({ leads, sortBy, sortOrder, onSort, onEdit, onDelete, onCo
       <tbody className="divide-y divide-[var(--border)]">
         {leads.map((lead) => (
           <tr key={lead._id} className="transition-colors hover:bg-[var(--surface-hover)]">
-            <td className="px-4 py-3 font-medium whitespace-nowrap">{lead.name}</td>
+            <td className="px-4 py-3 font-medium whitespace-nowrap">
+              <Link href={`/leads/${lead._id}`} className="hover:text-[var(--primary)] hover:underline">
+                {lead.name}
+              </Link>
+            </td>
             <td className={cn("px-4 py-3 text-muted", HIDE_CLASS.xl)}>{lead.email}</td>
             <td className={cn("px-4 py-3 text-muted whitespace-nowrap", HIDE_CLASS.xl)}>{lead.phone}</td>
             <td className="px-4 py-3 text-muted whitespace-nowrap">{lead.company}</td>
@@ -118,10 +123,10 @@ function MobileCard({ lead, onEdit, onDelete, onConvert }) {
   return (
     <div className="px-4 py-3.5">
       <div className="flex items-start justify-between gap-3">
-        <div className="min-w-0">
+        <Link href={`/leads/${lead._id}`} className="min-w-0">
           <p className="truncate text-sm font-medium">{lead.name}</p>
           <p className="truncate text-xs text-muted">{lead.company}</p>
-        </div>
+        </Link>
         <div className="flex shrink-0 items-center gap-1">
           <StatusBadge status={lead.status} />
           <RowActions lead={lead} onEdit={onEdit} onDelete={onDelete} onConvert={onConvert} />
@@ -202,6 +207,10 @@ function RowActions({ lead, onEdit, onDelete, onConvert }) {
           role="menu"
           className="absolute top-full right-0 z-20 mt-1 w-44 overflow-hidden rounded-[var(--radius-card)] border border-[var(--border)] bg-[var(--surface)] py-1 shadow-lg"
         >
+          <MenuItem icon={Eye} href={`/leads/${lead._id}`} onClick={() => setOpen(false)}>
+            View details
+          </MenuItem>
+
           {can("lead:update") && (
             <MenuItem
               icon={Pencil}
@@ -245,21 +254,32 @@ function RowActions({ lead, onEdit, onDelete, onConvert }) {
   );
 }
 
-function MenuItem({ icon: Icon, children, destructive, onClick }) {
-  return (
-    <button
-      type="button"
-      role="menuitem"
-      onClick={onClick}
-      className={cn(
-        "flex w-full items-center gap-2 px-3 py-2 text-left text-sm transition-colors",
-        destructive
-          ? "text-[var(--danger)] hover:bg-[var(--danger-soft)]"
-          : "text-[var(--text-muted)] hover:bg-[var(--surface-hover)] hover:text-[var(--text)]"
-      )}
-    >
+function MenuItem({ icon: Icon, children, destructive, onClick, href }) {
+  const className = cn(
+    "flex w-full items-center gap-2 px-3 py-2 text-left text-sm transition-colors",
+    destructive
+      ? "text-[var(--danger)] hover:bg-[var(--danger-soft)]"
+      : "text-[var(--text-muted)] hover:bg-[var(--surface-hover)] hover:text-[var(--text)]"
+  );
+
+  const content = (
+    <>
       <Icon className="h-3.5 w-3.5" />
       {children}
+    </>
+  );
+
+  if (href) {
+    return (
+      <Link href={href} role="menuitem" onClick={onClick} className={className}>
+        {content}
+      </Link>
+    );
+  }
+
+  return (
+    <button type="button" role="menuitem" onClick={onClick} className={className}>
+      {content}
     </button>
   );
 }

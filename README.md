@@ -50,9 +50,15 @@ rejects them with `403` even if the request is replayed by hand.
 | Route | Contents |
 |---|---|
 | `/login` | Email + password, inline validation, demo-account picker |
-| `/dashboard` | KPI tiles, pipeline and source charts, 30-day trend, recent leads |
+| `/dashboard` | KPI tiles with sparkline and period delta, pipeline and source charts, 30-day trend, recent leads |
 | `/leads` | Searchable / filterable / sortable table with paging and add-edit forms |
+| `/leads/[id]` | Lead detail, conversion, and the activity timeline |
 | `/customers` | Customer list with the same table treatment |
+| `/customers/[id]` | Customer detail and its activity timeline |
+
+Clicking a name in either table opens its detail page. **Activity** — calls, meetings,
+emails, notes and tasks — is logged and read there; a SALES user can add entries but the
+delete control is absent, and the API rejects the request regardless.
 
 ---
 

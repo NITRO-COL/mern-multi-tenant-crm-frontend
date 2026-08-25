@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { ArrowDown, ArrowUp, ArrowUpDown, MoreVertical, Pencil, Trash2 } from "lucide-react";
 import { cn, formatDate, initials } from "@/lib/utils";
@@ -68,7 +69,12 @@ export function CustomerTable({ customers, sortBy, sortOrder, onSort, onEdit, on
               <tr key={customer._id} className="transition-colors hover:bg-[var(--surface-hover)]">
                 <td className="px-4 py-3">
                   <div className="flex items-center gap-2">
-                    <span className="font-medium whitespace-nowrap">{customer.name}</span>
+                    <Link
+                      href={`/customers/${customer._id}`}
+                      className="font-medium whitespace-nowrap hover:text-[var(--primary)] hover:underline"
+                    >
+                      {customer.name}
+                    </Link>
                     {customer.convertedFromLeadId && (
                       <Badge className="text-[10px]">Converted</Badge>
                     )}
@@ -99,10 +105,10 @@ export function CustomerTable({ customers, sortBy, sortOrder, onSort, onEdit, on
         {customers.map((customer) => (
           <div key={customer._id} className="px-4 py-3.5">
             <div className="flex items-start justify-between gap-3">
-              <div className="min-w-0">
+              <Link href={`/customers/${customer._id}`} className="min-w-0">
                 <p className="truncate text-sm font-medium">{customer.name}</p>
                 <p className="truncate text-xs text-muted">{customer.company}</p>
-              </div>
+              </Link>
               <div className="flex shrink-0 items-center gap-1">
                 <StatusBadge status={customer.status} kind="customer" />
                 <RowActions customer={customer} onEdit={onEdit} onDelete={onDelete} />
