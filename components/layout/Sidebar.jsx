@@ -3,11 +3,10 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { LogOut, Zap } from "lucide-react";
-import { useQuery } from "@tanstack/react-query";
 import { cn, initials } from "@/lib/utils";
 import { useAuth } from "@/lib/auth-context";
 import { RoleBadge } from "@/components/ui/Badge";
-import { getDashboard } from "@/features/dashboard/api";
+import { useDashboard } from "@/features/dashboard/hooks";
 import { NAV_ITEMS } from "./nav-items";
 
 /**
@@ -22,8 +21,9 @@ export function Sidebar() {
   const pathname = usePathname();
   const { user, tenant, logout } = useAuth();
 
-  // Shares the dashboard's cache entry — the sidebar costs no extra request.
-  const { data } = useQuery({ queryKey: ["dashboard"], queryFn: getDashboard, staleTime: 30_000 });
+  // Shares the dashboard's cache entry — the rail costs no extra request, and
+  // the key is tenant-namespaced like every other query.
+  const { data } = useDashboard();
   const kpis = data?.data?.kpis;
 
   const counts = {

@@ -2,13 +2,14 @@
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { useAuth } from "@/lib/auth-context";
+import { queryKeys } from "@/lib/query-keys";
 import * as customerApi from "./api";
 
-const KEY = "customers";
-
 export function useCustomers(params) {
+  const { tenant } = useAuth();
   return useQuery({
-    queryKey: [KEY, params],
+    queryKey: queryKeys.customers(tenant?.id, params),
     queryFn: () => customerApi.listCustomers(params),
     placeholderData: (previous) => previous,
   });
@@ -16,10 +17,8 @@ export function useCustomers(params) {
 
 function useInvalidate() {
   const queryClient = useQueryClient();
-  return () => {
-    queryClient.invalidateQueries({ queryKey: [KEY] });
-    queryClient.invalidateQueries({ queryKey: ["dashboard"] });
-  };
+  const { tenant } = useAuth();
+  return () => queryClient.invalidateQueries({ queryKey: queryKeys.allForTenant(tenant?.id) });
 }
 
 export function useCreateCustomer() {
