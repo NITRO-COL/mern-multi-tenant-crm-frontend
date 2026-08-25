@@ -23,7 +23,8 @@ export default function DashboardPage() {
     );
   }
 
-  const { kpis, charts, recentLeads } = data.data;
+  const { kpis, charts, recentLeads, deltas } = data.data;
+  const leadSpark = charts.leadsTrend.map((d) => d.count);
 
   return (
     <div className="space-y-5">
@@ -34,17 +35,22 @@ export default function DashboardPage() {
 
       {/* KPI row — headline numbers are stat tiles, not one-bar charts. */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
-        <KpiCard label="Total leads" value={kpis.totalLeads} emphasis />
+        <KpiCard
+          label="Total leads"
+          value={kpis.totalLeads}
+          delta={deltas?.leads}
+          sparkline={leadSpark}
+        />
         <KpiCard label="New" value={kpis.newLeads} dotColor={STAGE_COLORS.NEW} />
         <KpiCard label="Qualified" value={kpis.qualifiedLeads} dotColor={STAGE_COLORS.QUALIFIED} />
         <KpiCard
           label="Converted"
           value={kpis.convertedLeads}
           dotColor={STAGE_COLORS.CONVERTED}
-          hint={`${kpis.conversionRate}% conversion`}
+          hint={`${kpis.conversionRate}% conversion rate`}
         />
         <KpiCard label="Lost" value={kpis.lostLeads} dotColor={STAGE_COLORS.LOST} />
-        <KpiCard label="Customers" value={kpis.totalCustomers} emphasis />
+        <KpiCard label="Customers" value={kpis.totalCustomers} delta={deltas?.customers} />
       </div>
 
       <div className="grid gap-4 lg:grid-cols-2">
