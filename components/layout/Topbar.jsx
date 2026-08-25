@@ -37,7 +37,8 @@ export function Topbar({ title }) {
       <div className="flex items-center gap-1">
         <ThemeToggle />
 
-        <div className="relative" ref={menuRef}>
+        {/* The sidebar carries the user card on desktop; this is the mobile path. */}
+        <div className="relative lg:hidden" ref={menuRef}>
           <button
             type="button"
             onClick={() => setMenuOpen((v) => !v)}
