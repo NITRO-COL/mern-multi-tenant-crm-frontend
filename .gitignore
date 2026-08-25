@@ -33,6 +33,9 @@ yarn-error.log*
 # env files (can opt-in for committing if needed)
 .env*
 
+# ...but the template is a deliverable and must be committed
+!.env.example
+
 # vercel
 .vercel
 
