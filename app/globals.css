@@ -1,0 +1,177 @@
+@import "tailwindcss";
+
+/* ---------------------------------------------------------------------------
+   Design tokens
+   One neutral scale (zinc) + a single indigo accent. Everything else — borders,
+   surfaces, muted text — is a shade of the neutral. Restricting the palette this
+   hard is what makes an interface read as a system rather than a collection of
+   screens.
+--------------------------------------------------------------------------- */
+@theme {
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  --radius-card: 0.625rem;
+
+  --color-brand-50:  #eef2ff;
+  --color-brand-100: #e0e7ff;
+  --color-brand-200: #c7d2fe;
+  --color-brand-500: #6366f1;
+  --color-brand-600: #4f46e5;
+  --color-brand-700: #4338ca;
+}
+
+:root {
+  --bg: #fafafa;
+  --surface: #ffffff;
+  --surface-hover: #f4f4f5;
+  --border: #e4e4e7;
+  --border-strong: #d4d4d8;
+  --text: #18181b;
+  --text-muted: #71717a;
+  --text-subtle: #a1a1aa;
+  --primary: #4f46e5;
+  --primary-hover: #4338ca;
+  --primary-fg: #ffffff;
+  --ring: #6366f1;
+  --danger: #dc2626;
+  --danger-soft: #fef2f2;
+
+  /* Chart tokens ----------------------------------------------------------
+     Pipeline stages use an ORDINAL blue ramp (one hue, monotone lightness):
+     the further along the pipeline, the further the fill sits from the page
+     surface. LOST is deliberately outside the ramp, in the de-emphasis gray —
+     it is context, not a stage. Validated in both modes against the
+     surface it is drawn on. */
+  --chart-stage-1: #86b6ef; /* NEW       */
+  --chart-stage-2: #5598e7; /* CONTACTED */
+  --chart-stage-3: #2a78d6; /* QUALIFIED */
+  --chart-stage-4: #1c5cab; /* CONVERTED */
+  --chart-muted: #a1a1aa;   /* LOST      */
+  --chart-accent: #2a78d6;  /* single-series bars and the trend area */
+  --chart-grid: #e4e4e7;
+  --chart-axis: #a1a1aa;
+}
+
+.dark {
+  --bg: #09090b;
+  --surface: #18181b;
+  --surface-hover: #27272a;
+  --border: #27272a;
+  --border-strong: #3f3f46;
+  --text: #fafafa;
+  --text-muted: #a1a1aa;
+  --text-subtle: #71717a;
+  --primary: #6366f1;
+  --primary-hover: #818cf8;
+  --primary-fg: #ffffff;
+  --ring: #818cf8;
+  --danger: #ef4444;
+  --danger-soft: #1f1315;
+
+  /* Re-stepped for the dark surface, not flipped: the ramp still runs from
+     "closest to the surface" (NEW) to "furthest from it" (CONVERTED). */
+  --chart-stage-1: #184f95;
+  --chart-stage-2: #256abf;
+  --chart-stage-3: #3987e5;
+  --chart-stage-4: #86b6ef;
+  --chart-muted: #71717a;
+  --chart-accent: #3987e5;
+  --chart-grid: #27272a;
+  --chart-axis: #52525b;
+}
+
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--bg);
+    color: var(--text);
+    font-feature-settings: "cv11", "ss01";
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* iOS zooms the viewport when a focused input is under 16px. */
+  input,
+  select,
+  textarea {
+    font-size: 16px;
+  }
+  @media (min-width: 768px) {
+    input,
+    select,
+    textarea {
+      font-size: 0.875rem;
+    }
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--border-strong);
+    border-radius: 999px;
+    border: 3px solid var(--bg);
+  }
+}
+
+@layer utilities {
+  .surface {
+    background-color: var(--surface);
+  }
+  .text-muted {
+    color: var(--text-muted);
+  }
+  .text-subtle {
+    color: var(--text-subtle);
+  }
+
+  /* Respects the notch / home indicator on iOS. */
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  @keyframes shimmer {
+    100% {
+      transform: translateX(100%);
+    }
+  }
+  .skeleton {
+    position: relative;
+    overflow: hidden;
+    background-color: var(--surface-hover);
+  }
+  .skeleton::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background-image: linear-gradient(
+      90deg,
+      transparent,
+      color-mix(in srgb, var(--border-strong) 45%, transparent),
+      transparent
+    );
+    animation: shimmer 1.6s infinite;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
