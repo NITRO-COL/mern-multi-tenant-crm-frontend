@@ -134,6 +134,25 @@ buried under the keyboard.
 
 ---
 
+## Deployment (Vercel)
+
+1. **Vercel → Add New → Project**, import this repository. Next.js is detected
+   automatically — no build configuration required.
+2. Add one environment variable:
+
+   | Key | Value |
+   |---|---|
+   | `NEXT_PUBLIC_API_URL` | `https://<your-api>.onrender.com` |
+
+3. Deploy, then set `CORS_ORIGIN` on the API to this project's Vercel URL and redeploy
+   the API — otherwise every request is blocked by CORS.
+
+Deploy the [API](https://github.com/NITRO-COL/mern-multi-tenant-crm-backend) first; its
+README covers the Render side and the order of operations.
+
+
+---
+
 ## Scripts
 
 | Command | Description |
